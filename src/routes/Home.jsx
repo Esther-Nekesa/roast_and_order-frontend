@@ -1,6 +1,9 @@
 import React from "react";
+import { useNavigate } from "react-router-dom"; // 👈 1. Import the useNavigate hook
 
 const Home = () => {
+  const navigate = useNavigate(); // 👈 2. Initialize the hook
+
   return (
     <div
       className="home-page"
@@ -46,7 +49,8 @@ const Home = () => {
 
       {/* Call to Action */}
       <button
-        onClick={() => (window.location.href = "/shop")}
+        // 3. FIX: Use navigate() instead of window.location.href
+        onClick={() => navigate("/shop")}
         style={{
           padding: "12px 25px",
           fontSize: "1.2em",

@@ -46,17 +46,10 @@ const Admin = () => {
           </h3>
           <ul style={{ listStyle: "none", padding: 0 }}>
             <li style={{ marginBottom: "10px" }}>
-              {/* Link directly to the Shop page */}
-              <Link
-                to="/shop"
-                style={{
-                  textDecoration: "none",
-                  color: "#5d4037",
-                  fontWeight: "bold",
-                }}
-              >
-                → View/Edit All Products
-              </Link>
+              {/* Link placeholder for dedicated Product Management Page */}
+              <a href="#" style={{ textDecoration: "none", color: "#5d4037" }}>
+                → Manage Products (CRU Page)
+              </a>
             </li>
             <li style={{ marginBottom: "10px" }}>
               <a href="#" style={{ textDecoration: "none", color: "#5d4037" }}>
@@ -79,14 +72,23 @@ const Admin = () => {
           <h3
             style={{ borderBottom: "2px solid #5d4037", paddingBottom: "10px" }}
           >
-            Order History
+            Order Tracking
           </h3>
           <p>
             Total pending orders: <strong style={{ color: "red" }}>5</strong>
           </p>
-          <p>
-            Total sales this month:{" "}
-            <strong style={{ color: "green" }}>$1,250.00</strong>
+          <p style={{ marginBottom: "15px" }}>
+            {/* 1. Linking to the dedicated Order Tracking page */}
+            <Link
+              to="/admin/orders"
+              style={{
+                textDecoration: "none",
+                color: "#5d4037",
+                fontWeight: "bold",
+              }}
+            >
+              → View All Orders
+            </Link>
           </p>
 
           {/* Interactive Button */}

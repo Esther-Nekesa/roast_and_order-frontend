@@ -1,14 +1,15 @@
+// frontend/src/main.jsx (The final clean version)
+
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
 import "./index.css";
-import { CartProvider } from "./context/CartContext.jsx"; // 👈 Import Provider
+
+// NOTE: You don't need to import CartProvider here, as it's correctly used in App.jsx
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    {/* CRITICAL: Wrap the App component with the CartProvider to fix the useContext error */}
-    <CartProvider>
-      <App />
-    </CartProvider>
+    {/* App contains the Router and CartProvider wrappers inside */}
+    <App />
   </React.StrictMode>
 );

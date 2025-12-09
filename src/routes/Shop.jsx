@@ -1,92 +1,86 @@
-import React from "react";
-import { useCart } from "../context/CartContext.jsx";
+// frontend/src/routes/Shop.jsx
 
-// Updated Dummy product list with 12 selections
-const PRODUCTS = [
-  {
-    id: 101,
-    name: "Dark Roast Sumatra",
-    price: 18.99,
-    description:
-      "Bold and smoky flavor. Perfect for espresso and French Press.",
-  },
-  {
-    id: 102,
-    name: "Ethiopian Yirgacheffe",
-    price: 15.49,
-    description:
-      "Fruity and floral notes. Great for pour-over and drip coffee.",
-  },
-  {
-    id: 103,
-    name: "Decaf Colombian",
-    price: 16.99,
-    description: "Smooth, water-processed decaf. Ideal for late nights.",
-  },
-  {
-    id: 104,
-    name: "Light Roast Costa Rica",
-    price: 14.5,
-    description: "Bright acidity with hints of citrus and honey.",
-  },
-  {
-    id: 105,
-    name: "Medium Blend House Select",
-    price: 17.25,
-    description: "Our most popular blend, balanced and versatile.",
-  },
-  {
-    id: 106,
-    name: "Kenya AA Single Origin",
-    price: 21.0,
-    description: "Complex flavor with savory and sweet undertones.",
-  },
+import React, { useState, useEffect } from "react";
+import { useCart } from "../context/CartContext.jsx"; // <-- PATH FIXED HERE
 
-  // --- New Products Added ---
-  {
-    id: 107,
-    name: "Guatemala Antigua",
-    price: 19.5,
-    description: "Rich, dark chocolate notes with a subtle spice finish.",
-  },
-  {
-    id: 108,
-    name: "Brazil Santos",
-    price: 13.99,
-    description: "Low acidity, smooth body, and nutty flavor.",
-  },
-  {
-    id: 109,
-    name: "Espresso Blend",
-    price: 18.25,
-    description: "A dark blend engineered for perfect crema and body.",
-  },
-  {
-    id: 110,
-    name: "Holiday Spice Blend",
-    price: 22.0,
-    description: "Seasonal blend with cinnamon, clove, and vanilla notes.",
-  },
-  {
-    id: 111,
-    name: "Rwanda Bourbon",
-    price: 16.75,
-    description: "Delicate tea-like body with sweet, caramel aromas.",
-  },
-  {
-    id: 112,
-    name: "Peruvian Organic",
-    price: 15.99,
-    description: "Medium roast, clean finish, and Fair Trade certified.",
-  },
-];
+// Assuming your FastAPI backend is running on port 8000
+const API_URL = "http://localhost:8000/products";
 
 const Shop = () => {
   const { addToCart } = useCart();
 
+  // State to hold fetched products and handle UI status
+  const [products, setProducts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const fetchProducts = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await fetch(API_URL);
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch products: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      setProducts(data);
+    } catch (err) {
+      console.error("Fetch error:", err);
+      setError("Could not load products. Please check the FastAPI server.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Run the fetch function once when the component mounts
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  // --- Conditional Rendering for Status ---
+
+  if (isLoading) {
+    return (
+      <div
+        className="shop-page"
+        style={{ padding: "20px", textAlign: "center" }}
+      >
+        <h2>Loading Products...</h2>
+        <p>Attempting to connect to the backend...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div
+        className="shop-page"
+        style={{ padding: "20px", textAlign: "center", color: "red" }}
+      >
+        <h2>Error Loading Products</h2>
+        <p>{error}</p>
+        <button
+          onClick={fetchProducts}
+          style={{
+            padding: "10px",
+            backgroundColor: "#f0f0f0",
+            border: "1px solid #ccc",
+            cursor: "pointer",
+          }}
+        >
+          Try Again
+        </button>
+      </div>
+    );
+  }
+
+  // --- Success Rendering: Product Grid ---
+
   return (
     <div className="shop-page" style={{ padding: "20px" }}>
-      <h2>Our Premium Coffee Selections</h2>
+      <h2>Our Premium Coffee Selections ({products.length} Items)</h2>
       <div
         style={{
           display: "grid",
@@ -94,7 +88,8 @@ const Shop = () => {
           gap: "20px",
         }}
       >
-        {PRODUCTS.map((product) => (
+        {/* Map over the fetched products */}
+        {products.map((product) => (
           <div
             key={product.id}
             style={{
@@ -106,7 +101,7 @@ const Shop = () => {
           >
             <h3>{product.name}</h3>
             <p style={{ color: "#555", minHeight: "40px" }}>
-              {product.description}
+              {product.description || "Freshly roasted coffee beans."}
             </p>
             <p
               style={{
@@ -115,7 +110,7 @@ const Shop = () => {
                 margin: "10px 0",
               }}
             >
-              ${product.price.toFixed(2)}
+              ${parseFloat(product.price).toFixed(2)}
             </p>
 
             <button
